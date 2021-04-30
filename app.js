@@ -103,7 +103,7 @@ function renderAbbrX(abbrGroup, newXScale, chosenXAxis) {
 
   abbrGroup.transition()
     .duration(1000)
-    .attr('cx', d => newXScale(d[chosenXAxis]));
+    .attr('x', d => newXScale(d[chosenXAxis]));
 
   return abbrGroup;
 }
@@ -114,7 +114,7 @@ function renderAbbrY(abbrGroup, newYScale, chosenYAxis) {
 
   abbrGroup.transition()
     .duration(1000)
-    .attr('cy', d => newYScale(d[chosenYAxis]));
+    .attr('y', d => newYScale(d[chosenYAxis]));
 
   return abbrGroup;
 }
@@ -226,6 +226,7 @@ d3.csv('data.csv').then(function(censusData, err) {
     .data(censusData)
     .enter()
     .append('text')
+    .attr('anchor', 'center')
     .text(d => d.abbr)
     .attr('x', d => xLinearScale(d[chosenXAxis]))
     .attr('y', d => yLinearScale(d[chosenYAxis])+fontSize/2)
