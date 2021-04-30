@@ -97,6 +97,28 @@ function renderCirclesY(circlesGroup, newYScale, chosenYAxis) {
   return circlesGroup;
 }
 
+// function used for updating abbr group with a transition to
+// new abbreviations
+function renderAbbrX(abbrGroup, newXScale, chosenXAxis) {
+
+  abbrGroup.transition()
+    .duration(1000)
+    .attr('cx', d => newXScale(d[chosenXAxis]));
+
+  return abbrGroup;
+}
+
+// function used for updating circles group with a transition to
+// new abbreviations
+function renderAbbrY(abbrGroup, newYScale, chosenYAxis) {
+
+  abbrGroup.transition()
+    .duration(1000)
+    .attr('cy', d => newYScale(d[chosenYAxis]));
+
+  return abbrGroup;
+}
+
 // // function used for updating circles group with new tooltip
 // function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 //   var xlabel;
@@ -200,21 +222,19 @@ d3.csv('data.csv').then(function(censusData, err) {
     .attr('opacity', '.6');
 
   var fontSize = 10;
-  
-  // var abbrGroup = chartGroup.selectAll(null)
-  //   .data(censusData)
-  //   .enter()
-  //   .append('text')
-  //   // .attr('anchor', 'center')
-  //   .text(d => d.abbr)
-  //   .attr('x', d => xScale(d[chosenXAxis]))
-  //   .attr('y', d => yScale(d[chosenYAxis])+fontSize/2)
-  //   .attr('font-size', `${fontSize}px`)
-  //   .classed('stateText', true);
+  var abbrGroup = chartGroup.selectAll(null)
+    .data(censusData)
+    .enter()
+    .append('text')
+    .text(d => d.abbr)
+    .attr('x', d => xLinearScale(d[chosenXAxis]))
+    .attr('y', d => yLinearScale(d[chosenYAxis])+fontSize/2)
+    .attr('font-size', `${fontSize}px`)
+    .classed('stateText', true);
 
   // Create group for three x-axis labels
   var xlabelsGroup = chartGroup.append('g')
-    .attr('transform', `translate(${width / 2}, ${height + 30})`);
+    .attr('transform', `translate(${width / 2}, ${height + 35})`);
 
   var povertyLabel = xlabelsGroup.append('text')
     .attr('x', 0)
@@ -288,6 +308,9 @@ d3.csv('data.csv').then(function(censusData, err) {
         // updates circles with new x values
         circlesGroup = renderCirclesX(circlesGroup, xLinearScale, chosenXAxis);
 
+        // updates abbreviations with new x values
+        abbrGroup = renderAbbrX(abbrGroup, xLinearScale, chosenXAxis);
+
         // // updates tooltips with new info
         // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
@@ -350,6 +373,9 @@ d3.csv('data.csv').then(function(censusData, err) {
 
       // updates circles with new y values
       circlesGroup = renderCirclesY(circlesGroup, yLinearScale, chosenYAxis);
+
+      // updates circles with new y values
+      abbrGroup = renderAbbrY(abbrGroup, yLinearScale, chosenYAxis);
 
     //   // updates tooltips with new info
     //   circlesGroup = updateToolTip(chosenYAxis, circlesGroup);
