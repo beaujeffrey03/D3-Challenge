@@ -120,7 +120,7 @@ function renderAbbrY(abbrGroup, newYScale, chosenYAxis) {
 }
 
 // function used for updating circles group with new tooltip
-function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+function updateToolTip(chosenXAxis, chosenYAxis, abbrGroup) {
   var xlabel;
   var ylabel;
 
@@ -155,17 +155,17 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
       return (`${d.state} <br> ${xlabel}: ${d[chosenXAxis]} <br> ${ylabel}: ${d[chosenYAxis]}`);
     });
 
-  circlesGroup.call(toolTip);
+    abbrGroup.call(toolTip);
 
-  circlesGroup.on('mouseover', function(data) {
+    abbrGroup.on('mouseover', function(data) {
     toolTip.show(data, this);
   })
     // onmouseout event
-    .on('mouseout', function(data, index) {
+    .on('mouseout', function(data) {
       toolTip.hide(data);
     });
 
-  return circlesGroup;
+  return abbrGroup;
 }
 
 // Retrieve data from the CSV file and execute everything below
@@ -284,7 +284,7 @@ d3.csv('data.csv').then(function(censusData, err) {
     .text('Obesity (%)');
 
   // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+  var tooltips = updateToolTip(chosenXAxis, chosenYAxis, abbrGroup);
 
   // x axis labels event listener
   xlabelsGroup.selectAll('text')
@@ -304,7 +304,6 @@ d3.csv('data.csv').then(function(censusData, err) {
 
         // updates x axis with transition
         xAxis = renderXAxes(xLinearScale, xAxis);
-        // yAxis = renderYAxes(yLinearScale, yAxis);
 
         // updates circles with new x values
         circlesGroup = renderCirclesX(circlesGroup, xLinearScale, chosenXAxis);
@@ -313,7 +312,7 @@ d3.csv('data.csv').then(function(censusData, err) {
         abbrGroup = renderAbbrX(abbrGroup, xLinearScale, chosenXAxis);
 
         // updates tooltips with new info
-        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+        tooltips = updateToolTip(chosenXAxis, chosenYAxis, abbrGroup);
 
         // changes classes to change bold text
         if (chosenXAxis === 'poverty') {
@@ -365,11 +364,10 @@ d3.csv('data.csv').then(function(censusData, err) {
         console.log(chosenYAxis);
 
         // functions here found above csv import
-        // updates x scale for new data
+        // updates y scale for new data
         yLinearScale = yScale(censusData, chosenYAxis);
 
         // updates y axis with transition
-        // xAxis = renderXAxes(xLinearScale, xAxis);
         yAxis = renderYAxes(yLinearScale, yAxis);
 
         // updates circles with new y values
@@ -379,7 +377,7 @@ d3.csv('data.csv').then(function(censusData, err) {
         abbrGroup = renderAbbrY(abbrGroup, yLinearScale, chosenYAxis);
 
         // updates tooltips with new info
-        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+        tooltips = updateToolTip(chosenXAxis, chosenYAxis, abbrGroup);
 
         // changes classes to change bold text
         if (chosenYAxis === 'healthcare') {
